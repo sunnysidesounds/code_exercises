@@ -1,4 +1,4 @@
-package HERE;
+package CompanyInterviewsQuestions.HERE;
 
 /**
  Given an array with sorted data, e.g.

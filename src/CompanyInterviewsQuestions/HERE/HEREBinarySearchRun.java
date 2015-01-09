@@ -1,4 +1,4 @@
-package HERE;
+package CompanyInterviewsQuestions.HERE;
 
 public class HEREBinarySearchRun {
 
