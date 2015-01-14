@@ -33,13 +33,15 @@ public class findStartEndIndexes {
         int high = arr.length-1;
         int start = -1;
         int end = -1;
-        int[] output = {start, -1};
+        int[] output = {start, end};
 
         if(arr.length == 0){
            return output;
         }
 
+        System.out.println("FUCK");
 
+        // Start index
         while(low <= high){
             int mid = low + (high - low) / 2;
             if(value < arr[mid]){
@@ -48,13 +50,28 @@ public class findStartEndIndexes {
                 start = mid;
                 high = mid - 1;
             } else {
-                low = mid - 1;
+                low = mid + 1;
             }
         }
 
-        System.out.println(start);
+        output[0] = start;
 
+        // End index
+        low = 0;
+        high = arr.length-1;
+        while(low <= high){
+            int mid = low + (high - low) / 2;
+            if(value < arr[mid]){
+                high = mid -1;
+            } else if (value == arr[mid]){
+                end = mid;
+                low = mid + 1;
+            } else {
+                low = mid + 1;
+            }
+        }
 
+        output[1] = end;
 
         return output;
     }
