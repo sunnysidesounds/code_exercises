@@ -1,6 +1,6 @@
-package HERE.test;
+package CompanyInterviewsQuestions.HERE.test;
 
-import HERE.HEREBinarySearch;
+import CompanyInterviewsQuestions.HERE.HEREBinarySearch;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
