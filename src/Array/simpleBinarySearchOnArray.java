@@ -1,9 +1,9 @@
-package BinarySearch;
+package Array;
 
 import java.util.*;
 
 
-public class simpleBinarySearch {
+public class simpleBinarySearchOnArray {
 
 
     public static void main(String[] args){
