@@ -1,9 +1,9 @@
-package BinarySearch.BinarySearchPrintLevelOrderTree;
+package BinarySearch.BinarySearchPrintLevelOrderTree2;
 
-import java.util.LinkedList;
 import java.util.*;
 
-public class printBinaryTreeLevelOrder {
+public class printBinaryTreeLevelOrder2 {
+
     public static void main(String[] args){
         BinarySearch bs = new BinarySearch();
         bs.add(50);
@@ -18,12 +18,8 @@ public class printBinaryTreeLevelOrder {
         bs.add(51);
         bs.add(53);
 
-        System.out.println("Tree count is: " + bs.count(bs.root));
 
-        bs.BFS(bs.root);
-        ArrayList<List<List<Integer>>> output = new ArrayList<List<List<Integer>>>();
-
-
+        System.out.println(bs.bfs());
     }
 }
 
@@ -31,51 +27,42 @@ public class printBinaryTreeLevelOrder {
 class BinarySearch{
     public Node root;
 
-    public void BFS(Node root){
+    public List<List<Integer>> bfs(){
+        ArrayList<List<Integer>> output = new ArrayList<List<Integer>>();
         Queue<Node> queue = new LinkedList<Node>();
+        int level = 0;
         if(root == null){
-            return;
+            return output;
         }
-        queue.clear();
         queue.add(root);
         while(!queue.isEmpty()){
-            Node node = queue.remove();
-            System.out.println(node.value + " ");
-            if(node.left != null){
-                queue.add(node.left);
+            level = queue.size();
+            ArrayList<Integer> sub = new ArrayList<Integer>();
+            while(level > 0){
+                Node node = queue.remove();
+                sub.add(node.value);
+                if(node.left != null){
+                    queue.add(node.left);
+                }
+                if(node.right != null){
+                    queue.add(node.right);
+                }
+                level--;
             }
-            if(node.right != null){
-                queue.add(node.right);
-            }
+            output.add(sub);
         }
+        return output;
     }
-
-
-    public int count(Node root){
-        if(root == null){
-            return 0;
-        } else {
-            int count = 1;
-            count += count(root.left);
-            count += count(root.right);
-            return count;
-        }
-    }
-
-
 
     public Node get(int value){
         Node node = root;
-        while(node.value != value){
-            if(value < node.value){
-                node = node.left;
-            } else if(value > node.value){
-                node = node.right;
-            }
+        if(node.value < value){
+            node = node.left;
+        } else {
+            node = node.right;
         }
         return node;
     }
-
     public void add(int value){
         Node newNode = new Node(value);
         if(root == null){
@@ -85,13 +72,13 @@ class BinarySearch{
             Node parent;
             while(true){
                 parent = node;
-                if(value < node.value){
+                if(node.value < value){
                     node = node.left;
-                    if(node == null) {
+                    if(node == null){
                         parent.left = newNode;
                         return;
                     }
-                } else if (value > node.value){
+                } else if (node.value > value){
                     node = node.right;
                     if(node == null){
                         parent.right = newNode;
@@ -101,17 +88,17 @@ class BinarySearch{
             }
         }
     }
+
 }
 
-
 class Node{
-    public int value;
-    public Node left;
-    public Node right;
+    Node left;
+    Node right;
+    int value;
 
     public Node(int value){
+        this.value = value;
         this.left = null;
         this.right = null;
-        this.value = value;
     }
 }
