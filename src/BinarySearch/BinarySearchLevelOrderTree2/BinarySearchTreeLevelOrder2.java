@@ -1,11 +1,15 @@
-package BinarySearch.BinarySearchPrintLevelOrderTree2;
+package BinarySearch.BinarySearchLevelOrderTree2;
 
 import java.util.*;
 
-public class printBinaryTreeLevelOrder2 {
+/*
+Given a binary tree, return the level order traversal of its nodes' values. (ie, from left to right, level by level).
+ */
+
+public class BinarySearchTreeLevelOrder2 {
 
     public static void main(String[] args){
-        BinarySearch bs = new BinarySearch();
+        BinarySearchTree bs = new BinarySearchTree();
         bs.add(50);
         bs.add(45);
         bs.add(55);
@@ -24,7 +28,7 @@ public class printBinaryTreeLevelOrder2 {
 }
 
 
-class BinarySearch{
+class BinarySearchTree {
     public Node root;
 
     public List<List<Integer>> bfs(){

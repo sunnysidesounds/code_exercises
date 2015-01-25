@@ -1,11 +1,11 @@
-package BinarySearch.BinarySearchPrintLevelOrderTree;
+package BinarySearch.BinarySearchLevelOrderTree;
 
 import java.util.LinkedList;
 import java.util.*;
 
-public class printBinaryTreeLevelOrder {
+public class BinarySearchTreeLevelOrder {
     public static void main(String[] args){
-        BinarySearch bs = new BinarySearch();
+        BinarySearchTree bs = new BinarySearchTree();
         bs.add(50);
         bs.add(45);
         bs.add(55);
@@ -28,7 +28,7 @@ public class printBinaryTreeLevelOrder {
 }
 
 
-class BinarySearch{
+class BinarySearchTree {
     public Node root;
 
     public void BFS(Node root){
