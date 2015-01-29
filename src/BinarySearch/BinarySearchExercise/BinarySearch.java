@@ -66,14 +66,19 @@ public class BinarySearch {
             Node rightNode;
             leftNode = root.getLeft();
             rightNode = root.getRight();
+
+            // Case 1: No child
             if(leftNode == null && rightNode == null){
                 return null;
+            // Case 2: One child
             } else if(leftNode == null){
                 p = rightNode;
                 return p;
+            //Case 2: One child
             } else if(rightNode == null){
                 p = leftNode;
                 return p;
+            //Case 3: Two chilren
             } else {
                 p2 = rightNode;
                 p = rightNode;
