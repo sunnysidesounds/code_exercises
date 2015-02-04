@@ -1,4 +1,4 @@
-package LinkedList.LinkedListReverseExercise;
+package LinkedLists.LinkedListReverseExercise;
 
 /**
  * How to you reverse a linkedlist without using another data structure (recursively / iteratively)

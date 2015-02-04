@@ -1,4 +1,4 @@
-package LinkedList.LinkedListExercise;
+package LinkedLists.LinkedListExercise;
 
 
 public class eLinkedList {

@@ -1,4 +1,4 @@
-package LinkedList.LinkedListExcercise2;
+package LinkedLists.LinkedListExcercise2;
 
 public class vLinkedList {
     public Node head;

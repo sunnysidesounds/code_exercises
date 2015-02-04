@@ -1,4 +1,4 @@
-package LinkedList.LinkedList3rdFromLastExercise;
+package LinkedLists.LinkedList3rdFromLastExercise;
 
 /*
 How do you find 3rd element from last in single pass?

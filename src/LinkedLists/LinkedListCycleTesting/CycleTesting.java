@@ -1,4 +1,4 @@
-package LinkedList.LinkedListCycleTesting;
+package LinkedLists.LinkedListCycleTesting;
 
 public class CycleTesting {
     public Node head;

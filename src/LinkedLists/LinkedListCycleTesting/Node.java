@@ -1,11 +1,10 @@
-package LinkedList.LinkedList3rdFromLastExercise;
-
+package LinkedLists.LinkedListCycleTesting;
 
 public class Node {
     public Node next;
     public Object value;
 
-    public Node(Object value){
+    public Node (Object value){
         this.next = null;
         this.value = value;
     }
@@ -20,4 +19,5 @@ public class Node {
         } while (current != null);
         return data;
     }
+
 }

@@ -1,4 +1,4 @@
-package LinkedList.CircularLinkedListExcercise;
+package LinkedLists.CircularLinkedListExcercise;
 
 public class CircularLinkedList {
     public Node head;

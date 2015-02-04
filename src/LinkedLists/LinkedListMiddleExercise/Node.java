@@ -1,11 +1,12 @@
-package LinkedList.LinkedListReverseExercise;
+package LinkedLists.LinkedListMiddleExercise;
+
 
 
 public class Node {
     public Node next;
-    public int value;
+    public Object value;
 
-    public Node(int value){
+    public Node(Object value){
         this.next = null;
         this.value = value;
     }
@@ -20,6 +21,5 @@ public class Node {
         } while (current != null);
         return data;
     }
-
 
 }
