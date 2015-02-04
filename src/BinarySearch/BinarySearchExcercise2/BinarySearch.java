@@ -40,31 +40,32 @@ public class BinarySearch {
 
         System.out.println("Number of nodes is: " + bs.countNodes(bs.root));
         System.out.println("Breadth-First Traversal (Level Order): " + bs.breadthFirstSearch(bs.root));
+        System.out.println();
+
         bs.preOrder(bs.root);
         System.out.println("Depth-First Traversal (Pre-Order): " + bs.preOrderArray);
-
         System.out.println("Depth-First Traversal 2 (Pre-Order): " + bs.preOrderTraversal(bs.root));
-
+        System.out.println();
 
         bs.inOrder(bs.root);
         System.out.println("Depth-First Traversal (In-Order): " + bs.inOrderArray);
-
-
         System.out.println("Depth-First Traversal 2 (In-Order): " + bs.inOrderTraversal(bs.root));
-
-
-
+        System.out.println();
 
         bs.postOrder(bs.root);
         System.out.println("Depth-First Traversal (Post-Order): " + bs.postOrderArray);
+        System.out.println("Depth-First Traversal 2 (Post-Order): " + bs.postorderTraversal(bs.root));
+        System.out.println();
+
 
         System.out.println("Find Min Node: " + bs.findMinNode(bs.root));
         System.out.println("Find Max Node: " + bs.findMaxNode(bs.root));
-
         System.out.println("Find height of edges: " + bs.findHeightEdges(bs.root));
+        System.out.println("Find height of nodes: " + bs.findHeightNodes(bs.root));
+        System.out.println();
 
-
-
+        int sum = 48;
+        System.out.println("Found sum of " + sum + " in tree: " + bs.hasPathSum(bs.root, sum));
 
     }
 
@@ -78,12 +79,43 @@ class BinarySearchTree{
     ArrayList<Integer> inOrderArray = new ArrayList<Integer>();
     ArrayList<Integer> postOrderArray = new ArrayList<Integer>();
 
+
+
+    public boolean hasPathSum(Node root, int sum) {
+        if(root == null){
+            return false;
+        }
+        Queue<Node> queue = new LinkedList<Node>();
+        Queue<Integer> values = new LinkedList<Integer>();
+
+        queue.add(root);
+        values.add(root.value);
+
+        while(!queue.isEmpty()){
+            Node node = queue.poll();
+            int sumValue = values.poll();
+            if(node.left == null && node.right == null && sumValue == sum){
+                return true;
+            }
+            if(node.left != null){
+                queue.add(node.left);
+                values.add(sumValue + node.left.value);
+            }
+            if(node.right != null){
+                queue.add(node.right);
+                values.add(sumValue + node.right.value);
+            }
+        }
+        return false;
+    }
+
+
+
     public int findHeightEdges(Node root){
         if(root == null){
             return -1;
         }
         return Math.max(findHeightEdges(root.left), findHeightEdges(root.right)) + 1;
-
     }
 
     public int findHeightNodes(Node root){
@@ -114,6 +146,7 @@ class BinarySearchTree{
     }
 
 
+    /* POST-ORDER */
     public void postOrder(Node root){
         if(root != null){
             postOrder(root.left);
@@ -122,6 +155,46 @@ class BinarySearchTree{
         }
     }
 
+
+    public List<Integer> postorderTraversal(Node root) {
+        ArrayList<Integer> output = new ArrayList<Integer>();
+        Stack<Node> stack = new Stack<Node>();
+        if(root == null){
+            return output;
+        }
+        stack.push(root);
+        Node previous = null;
+        while(!stack.isEmpty()){
+            Node node = stack.peek();
+            if(previous == null || previous.left == node || previous.right == node){
+                if(node.left != null){
+                    stack.push(node.left);
+                } else if (node.right != null){
+                    stack.push(node.right);
+                } else {
+                    stack.pop();
+                    output.add(node.value);
+                }
+            } else if(node.left == previous){
+                if(node.right != null){
+                    stack.push(node.right);
+                } else {
+                    stack.pop();
+                    output.add(node.value);
+                }
+
+            } else if (node.right == previous){
+                stack.pop();
+                output.add(node.value);
+            }
+            previous = node;
+        }
+        return output;
+    }
+
+
+
+    /* PRE-ORDER */
     public void preOrder(Node root){
         if(root != null){
             preOrderArray.add(root.value);
@@ -151,6 +224,7 @@ class BinarySearchTree{
     }
 
 
+    /* IN-ORDER */
     public void inOrder(Node root){
         if(root != null){
             inOrder(root.left);

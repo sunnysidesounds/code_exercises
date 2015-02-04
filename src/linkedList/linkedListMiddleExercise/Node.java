@@ -1,4 +1,4 @@
-package linkedList.linkedListMiddleExercise;
+package LinkedList.LinkedListMiddleExercise;
 
 
 

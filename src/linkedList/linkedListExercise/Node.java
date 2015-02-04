@@ -1,4 +1,4 @@
-package linkedList.linkedListExercise;
+package LinkedList.LinkedListExercise;
 
 
 public class Node {

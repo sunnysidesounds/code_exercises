@@ -1,4 +1,4 @@
-package linkedList.linkedListReverseExercise;
+package LinkedList.LinkedListReverseExercise;
 
 
 public class Node {

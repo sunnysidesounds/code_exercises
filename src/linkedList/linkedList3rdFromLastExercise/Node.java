@@ -1,4 +1,4 @@
-package linkedList.linkedList3rdFromLastExercise;
+package LinkedList.LinkedList3rdFromLastExercise;
 
 
 public class Node {

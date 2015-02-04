@@ -1,4 +1,4 @@
-package linkedList.linkedListMiddleExercise;
+package LinkedList.LinkedListMiddleExercise;
 
 /**
  * How do you find middle element of a linked list in single pass?
