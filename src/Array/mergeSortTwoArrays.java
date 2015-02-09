@@ -1,6 +1,9 @@
 package Array;
 
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
 
  Given two sorted integer arrays A and B, merge B into A as one sorted array.
@@ -35,7 +38,12 @@ package Array;
 public class mergeSortTwoArrays {
 
     public static void main(String[] args){
+        int[] a1 =  {1, 3, 5, 9, 13, 15};
+        int[] b1 =  {2, 4, 6, 8, 10, 12};
 
+        int[] merged = mergeTwoArray(a1, b1);
+
+        System.out.println("Merged two arrays from scratch no order: " + Arrays.toString(merged));
 
 
 
@@ -43,7 +51,21 @@ public class mergeSortTwoArrays {
 
     }
 
+    public static int[] mergeTwoArray(int[] a1, int[] a2){
+        int lenA = a1.length;
+        int lenB = a2.length;
+        int[] newArray = new int[lenA + lenB];
+        for(int i = 0; i < lenA; i++){
+            newArray[i] = a1[i];
+        }
+        for(int k = 0,j = lenA; k < lenB && j < newArray.length; j++, k++ ){
+            newArray[j] = a2[k];
+        }
+        return newArray;
 
+    }
+
+   /*
     public static void merge(int A[], int m, int B[], int n){
         while(m > 0 && n > 0){
 
@@ -52,7 +74,7 @@ public class mergeSortTwoArrays {
         }
 
 
-    }
+    }  */
 
 
 

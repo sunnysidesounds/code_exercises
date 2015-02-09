@@ -11,6 +11,10 @@ Note: A word is defined as a character sequence consists of non-space characters
 For example,
 Given s = "Hello World",
 return 5.
+
+
+
+
  */
 
 public class LengthOfLastWord {
@@ -33,8 +37,6 @@ public class LengthOfLastWord {
         String newString = s.trim();
         String[] stringArray = newString.split(" ");
         int length = stringArray.length;
-
-
         return stringArray[length-1].length();
     }
 

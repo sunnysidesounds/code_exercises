@@ -23,6 +23,8 @@ public class BinarySearchTreeLevelOrder2 {
         bs.add(53);
 
 
+        System.out.println("Found value: " + bs.get(56).value);
+
         System.out.println(bs.bfs());
     }
 }

@@ -25,6 +25,7 @@ public class findAllDuplicatesInArray {
 
         System.out.println(Arrays.toString(duplicatesArrays));
         System.out.println("Duplicate values are: " + findAllDuplicates(duplicatesArrays));
+        System.out.println("Remove Duplicates: " + removeDuplicate(duplicatesArrays));
 
     }
 
@@ -41,6 +42,18 @@ public class findAllDuplicatesInArray {
         }
         return duplicates;
     }
+
+    public static List<Integer> removeDuplicate(int[] array){
+        ArrayList<Integer> values = new ArrayList<Integer>();
+        for(int item: array){
+            if(!values.contains(item)){
+                values.add(item);
+            }
+
+        }
+        return values;
+    }
+
 
 
 }

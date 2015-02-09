@@ -6,10 +6,29 @@ public class removeDuplicatesFromArray {
 
     public static void main(String[] args) {
         int[] arr = { 1, 2, 2, 3, 3 };
-        arr = removeDuplicates(arr);
-        System.out.println(arr.length);
+        int[] out = findDuplicatesInArray(arr);
+
+        System.out.println(Arrays.toString(out));
+       // System.out.println(arr.length);
     }
 
+
+    public static int[] findDuplicatesInArray(int[] arr){
+
+        HashSet<Integer> output = new HashSet<Integer>();
+        for(int i=0; i <= arr.length-1; i++){
+            output.add(arr[i]);
+        }
+        int[] out = new int[output.size()];
+        int count = 0;
+        for(Integer v : output){
+            out[count] = v;
+            count++;
+        }
+
+        return out;
+
+    }
 
 
     public static int[] removeDuplicates(int[] A) {
@@ -21,24 +40,11 @@ public class removeDuplicatesFromArray {
 
         while (i < A.length) {
             if (A[i] == A[j]) {
-                System.out.println("Match ==  i: " + A[i] + "  j: " + A[j] );
-
-
                 i++;
-
-                System.out.println("i: iterator = " + i);
             } else {
-
-                System.out.println("i: " + A[i] + "  j: " + A[j] );
-
                 j++;
                 A[j] = A[i];
                 i++;
-
-
-                System.out.println("array" + Arrays.toString(A) );
-                System.out.println("i: iterator = " + i);
-                System.out.println("j: iterator = " + j);
 
             }
         }
@@ -47,6 +53,9 @@ public class removeDuplicatesFromArray {
 
         return B;
     }
+
+
+
 
 
 
