@@ -14,8 +14,8 @@ public class linkedListReverse {
         node.next.next.next.next = new Node(1);
 
         System.out.println("Original List: " + node.toString());
-        System.out.println("Recursively Reverse List: " + reverseRecursive(node));
-        System.out.println("Iteratively Reverse List: " + reverseRecursive(node));
+       // System.out.println("Recursively Reverse List: " + reverseRecursive(node));
+        System.out.println("Iteratively Reverse List: " + reverseIterative(node).toString());
     }
 
     public static Node reverseRecursive(Node node){
