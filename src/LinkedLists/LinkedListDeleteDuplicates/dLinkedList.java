@@ -16,21 +16,20 @@ public class dLinkedList {
         dLinkedList ll = new dLinkedList();
 
         ll.insert(1);
-        ll.insert(1);
-        ll.insert(1);
-      /*  ll.insert(3);
+        ll.insert(2);
         ll.insert(3);
         ll.insert(4);
         ll.insert(5);
-        ll.insert(6);
-        ll.insert(6);
-        ll.insert(7); */
+
+
+        ll.deletePosition(ll.head, 3);
+
 
         System.out.println("List: " + ll.toString());
 
-        ll.deleteDuplicates(ll.head);
+       // ll.deleteDuplicates(ll.head);
 
-        System.out.println("After duplicate deleted List: " + ll.toString());
+       // System.out.println("After duplicate deleted List: " + ll.toString());
 
     }
 
@@ -87,6 +86,35 @@ public class dLinkedList {
         current.next = newNode;
         counter++;
     }
+
+
+    public Node deletePosition(Node head, int position) {
+        // Complete this method
+        if(head == null){
+            return head;
+        }
+
+        int currentPosition = 0;
+        Node current = head;
+        while(current.next != null && currentPosition != position){
+
+            System.out.println("currentPosition " + currentPosition);
+            System.out.println("currentValue " + current.value);
+            //System.out.println("position " + position);
+
+            current = current.next;
+            currentPosition++;
+        }
+
+        System.out.println("currentPosition after " + currentPosition);
+
+        current.next = current.next.next;
+
+        return current;
+
+    }
+
+
 
     public void delete(int value){
         if(head == null){
