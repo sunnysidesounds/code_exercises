@@ -38,6 +38,31 @@ public class simpleBinarySearchOnArray {
 
     }
 
+    /**
+     * Binary Search on a sorted array
+     */
+    public static int simpleBinarySearch(int[] array){
+        int searchValue = 86;
+        int low = 0;
+        int high = array.length-1;
+        int out = -1;
+
+        while(low <= high){
+            int mid = low + (high - low) / 2;
+            if(searchValue < array[mid]){
+                high = mid -1;
+            } else if (searchValue == array[mid]){
+               out = array[mid];
+            } else {
+                low = mid + 1;
+            }
+
+        }
+        return out;
+    }
+
+
+
 
 
 

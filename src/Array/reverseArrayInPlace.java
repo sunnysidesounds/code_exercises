@@ -17,8 +17,21 @@ public class reverseArrayInPlace {
             array[i] = array[k];
             array[k] = temp;
         }
-        System.out.println("After: " + Arrays.toString(array));
+        System.out.println("After: " + reverseArrayInPlce(array));
     }
+
+
+    public static int[] reverseArrayInPlce(int[] array){
+
+        for(int i = 0, k = array.length-1; i < array.length / 2; i++, k--){
+            int temp = array[i];
+            array[i] = array[k];
+            array[k] = temp;
+        }
+         return array;
+
+    }
+
 
 
 
