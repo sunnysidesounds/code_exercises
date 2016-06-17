@@ -1,5 +1,7 @@
 package Experiments;
 
+import BinarySearch.BinarySearchExercise.Node;
+
 import java.util.*;
 
 public class StdOutGraphics {

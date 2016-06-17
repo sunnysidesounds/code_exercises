@@ -26,51 +26,26 @@ public class GraphHack {
         this.adjacencyLists[v].add(w);
     }
 
+    public void dfs(int startNode){
+        boolean visitedNode[] = new boolean[this.numberOfVertices];
+        Stack<Integer> stack = new Stack<Integer>();
 
+        visitedNode[startNode] = true;
+        stack.push(startNode);
 
-    public static void main(String[] args){
-        GraphHack g = new GraphHack(6);
-        //g.addEdge(0, 1);
-        //g.addEdge(0, 4);
-        //g.addEdge(1, 2);
-        //g.addEdge(4, 3);
-        //g.addEdge(2, 3);
-        //g.addEdge(3, 5);
-        //g.addEdge(5, 5);
-        //
-        g.addEdge(1, 0);
-        g.addEdge(0, 2);
-        g.addEdge(2, 1);
-        g.addEdge(0, 3);
-        g.addEdge(3, 4);
-        g.addEdge(4, 0);
-
-
-        int[][] test = new int[4][4];
-
-
-
-
-        System.out.println(Arrays.toString(g.getAdjacencyLists()));
-        int node = 0;
-        for(LinkedList j : g.getAdjacencyLists()){
-
-            System.out.println("node : " + node + "  --> edges : " + j);
-            node++;
+        while(!stack.isEmpty()){
+            startNode = stack.pop();
+            System.out.print(startNode + " ");
+            ListIterator<Integer> i = this.adjacencyLists[startNode].listIterator();
+            while(i.hasNext()){
+                int n = i.next();
+                if (!visitedNode[n]){
+                    visitedNode[n] = true;
+                    stack.push(n);
+                }
+            }
         }
-
-
-        System.out.println("Breadth First Search");
-        g.bfs(0);
-        System.out.println("");
-        System.out.println("Depth First Search Recursive");
-        g.dfs_recursive(0);
-        System.out.println("");
-        System.out.println("Depth First Search");
-        g.dfs(0);
-
     }
-
 
     public void bfs(int startNode){
         boolean visitedNode[] = new boolean[this.numberOfVertices];
@@ -92,34 +67,6 @@ public class GraphHack {
                 }
             }
         }
-
-    }
-
-    public void dfs(int startNode){
-        boolean visitedNode[] = new boolean[this.numberOfVertices];
-        Stack<Integer> stack = new Stack<Integer>();
-
-        visitedNode[startNode] = true;
-        stack.push(startNode);
-
-        while(!stack.isEmpty()){
-            startNode = stack.pop();
-            System.out.print(startNode + " ");
-            ListIterator<Integer> i = this.adjacencyLists[startNode].listIterator();
-            while(i.hasNext()){
-                int n = i.next();
-                if (!visitedNode[n]){
-                    visitedNode[n] = true;
-                    stack.push(n);
-                }
-
-
-            }
-
-
-
-        }
-
 
     }
 
@@ -151,7 +98,48 @@ public class GraphHack {
 
 
 
+    public static void main(String[] args){
+        GraphHack g = new GraphHack(4);
+        //g.addEdge(0, 1);
+        //g.addEdge(0, 4);
+        //g.addEdge(1, 2);
+        //g.addEdge(4, 3);
+        //g.addEdge(2, 3);
+        //g.addEdge(3, 5);
+        //g.addEdge(5, 5);
+        //
+        g.addEdge(0, 1);
+        g.addEdge(0, 2);
+        g.addEdge(1, 2);
+        g.addEdge(2, 0);
+        g.addEdge(2, 3);
+        g.addEdge(3, 3);
 
+
+        int[][] test = new int[4][4];
+
+
+
+
+        System.out.println(Arrays.toString(g.getAdjacencyLists()));
+        int node = 0;
+        for(LinkedList j : g.getAdjacencyLists()){
+
+            System.out.println("node : " + node + "  --> edges : " + j);
+            node++;
+        }
+
+
+        System.out.println("Breadth First Search");
+        g.bfs(0);
+        System.out.println("");
+        System.out.println("Depth First Search Recursive");
+        g.dfs_recursive(0);
+        System.out.println("");
+        System.out.println("Depth First Search");
+        g.dfs(0);
+
+    }
 
 
 
