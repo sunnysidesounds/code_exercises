@@ -11,7 +11,9 @@ public class compareTwoArrays {
     public static void main(String[] args){
         int[] array1 = {1, 2, 3, 4, 5};
         int[] array2 = {2, 3, 1, 0, 5};
-        System.out.println("Missing from list 2: " + findValuesInPresent(array1, array2));
+        int[] array3 = {0, 0, 1, 0, 0, 1, 1, 0};
+        //System.out.println("Missing from list 2: " + findValuesInPresent(array1, array2));
+        printArray(array3);
     }
 
     public static int findValuesInPresent(int[] a1, int[] a2){
@@ -29,5 +31,31 @@ public class compareTwoArrays {
         }
         return -1;
     }
+
+
+    public static void printArray(int[] A){
+
+        int energy = 100;
+        for(int i = 0; i < A.length; i += 2){
+            //if(i != 0) {
+                int cloud = A[i];
+                if(cloud == 1){
+                    energy = energy -2;
+                }
+                energy = energy -1;
+
+
+
+                System.out.println(i + " : " + A[i]);
+           // }
+
+        }
+
+        System.out.println("energy : " + energy);
+
+    }
+
+
+
 
 }
