@@ -1,11 +1,18 @@
 package CompanyInterviewsQuestions.Thunder;
 
+// Exercise Requirements based off : https://gist.github.com/ktilcu/ef1d416279e453389c5d4cf1e6fb708b
+
+
 import java.net.URL;
 import java.io.*;
+import java.util.*;
+
+// Using Codehaus Jackson's library for JSON manipulation
+// Source : https://github.com/codehaus/jackson
+// Jar : http://www.java2s.com/Code/JarDownload/jackson-all/jackson-all-1.9.0.jar.zip
 import org.codehaus.jackson.*;
 import org.codehaus.jackson.map.*;
 import org.codehaus.jackson.node.*;
-import java.util.*;
 
 
 public class ThunderExercise {
@@ -22,9 +29,17 @@ public class ThunderExercise {
 
         String url = "http://localhost:8082/json/creativefamily.json";
         ThunderExercise thunder = new ThunderExercise(url);
-        ArrayList<JsonNode> flattenedWidgets = thunder.flattenWidgets();
+        /* Upon Instantiation :
+            - Make and get the response for json
+            - Build a assets map
+            - Build a widgets array
+            - Init the results array
+         */
 
-        System.out.println("Results : " + flattenedWidgets);
+        /* By calling flattenWidgets
+            - Iterator over widgets array merging in properties from the assets map
+         */
+        System.out.println("StdOut : " + thunder.flattenWidgets());
 
     }
 
@@ -52,9 +67,10 @@ public class ThunderExercise {
         }
         this.results = new ArrayList<JsonNode>();
 
-        System.out.println("Assets Map : " + this.assetsMap);
+        // For debugging
+        //System.out.println("Assets Map : " + this.assetsMap);
         //System.out.println("Widgets Array : " + this.widgetsArray);
-       // System.out.println("Widgets Array Size : " + this.widgetsArray.size());
+
 
     }
 
@@ -64,7 +80,6 @@ public class ThunderExercise {
               String uuid = widget.get("uuid").asText();
               if(widget.get("asset-uuid") != null){
                   String assetUUID = widget.get("asset-uuid").asText();
-
                   if(this.assetsMap.containsKey(assetUUID)){
                       this.mergeNodes(widget, this.assetsMap.get(assetUUID));
                   } else {
@@ -73,7 +88,6 @@ public class ThunderExercise {
               } else {
                   System.out.println(" ERROR : Widget "+uuid+" does not have asset-uuid " + widget);
               }
-             System.out.println("--------");
           }
         } else {
             throw new RuntimeException("Widgets array is empty");
@@ -86,9 +100,10 @@ public class ThunderExercise {
      * @param widgets JsonNode of widgets
      * @param assets JsonNode of assets
      */
-    public void mergeNodes(JsonNode widgets, JsonNode assets){
+    private void mergeNodes(JsonNode widgets, JsonNode assets){
         ObjectMapper mapper = new ObjectMapper();
-        JsonNode tmpAssets = assets;
+        // Create a copy of the assets JsonNode, so we can manipulate it without causing harm to this.assetsMap
+        JsonNode tmpAssets = mapper.valueToTree(assets);
         ObjectNode newNode = mapper.createObjectNode();
 
         Iterator<Map.Entry<String, JsonNode>> widgetFlds = widgets.getFields();
@@ -124,7 +139,7 @@ public class ThunderExercise {
      * Recurively find all out widgets and add them to our widgets array.
      * @param node JsonNode
      */
-    public void buildWidgetArray(JsonNode node) {
+    private void buildWidgetArray(JsonNode node) {
        Iterator<Map.Entry<String, JsonNode>> fieldsIterator = node.getFields();
        while (fieldsIterator.hasNext()) {
             Map.Entry<String, JsonNode> field = fieldsIterator.next();
@@ -150,8 +165,7 @@ public class ThunderExercise {
      * Add JsonNodes to our widget array
      * @param nodesArray JsonNode array
      */
-
-    public void addNodesToList(JsonNode nodesArray){
+    private void addNodesToList(JsonNode nodesArray){
         if (nodesArray.isArray()) {
             for (final JsonNode objNode : nodesArray) {
                 this.widgetsArray.add(objNode);
@@ -163,7 +177,7 @@ public class ThunderExercise {
      * This builds an assets maps with property key / pairs pairs
      * Example Map Entry uuid = {text=foobar, color=#000}
      */
-    public void buildMap(JsonNode path){
+    private void buildMap(JsonNode path){
         HashMap<String, JsonNode> parent = new HashMap<String, JsonNode>();
         JsonNode node = path;
         Iterator<JsonNode> parentIterator = node.getElements();
@@ -186,7 +200,7 @@ public class ThunderExercise {
     /**
      * Sends a HTTP requests, captures the responses and converts string response into JsonNode object.
      */
-    public void sendRequestCaptureResponse(){
+    private void sendRequestCaptureResponse(){
 
         try {
             URL url = new URL(this.url);
