@@ -1,5 +1,3 @@
-package CompanyInterviewsQuestions.Thunder;
-
 // Exercise Requirements based off : https://gist.github.com/ktilcu/ef1d416279e453389c5d4cf1e6fb708b
 
 
@@ -27,7 +25,7 @@ public class ThunderExercise {
 
     public static void main(String[] args){
 
-        String url = "http://localhost:8082/json/creativefamily.json";
+        String url = "http://localhost:8082/json/creativefamily.json"; // <-- Change me
         ThunderExercise thunder = new ThunderExercise(url);
         /* Upon Instantiation :
             - Make and get the response for json
@@ -39,7 +37,7 @@ public class ThunderExercise {
         /* By calling flattenWidgets
             - Iterator over widgets array merging in properties from the assets map
          */
-        System.out.println("StdOut : " + thunder.flattenWidgets());
+        System.out.println(thunder.flattenWidgets());
 
     }
 
