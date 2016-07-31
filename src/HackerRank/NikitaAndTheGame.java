@@ -135,7 +135,7 @@ c/w
 
         HashMap<Character, int[]> map = new HashMap<Character, int[]>();
         map.put('A', A);
-        //map.put('B', B);
+        map.put('B', B);
         map.put('C', C);
         map.put('D', D);
         map.put('E', E);
@@ -177,7 +177,7 @@ c/w
     }
 
 
-    // Working prototype passes all tests
+    // Correct Answer
     public static int runNikitaGame(int[] A){
         int points = 0;
 
@@ -186,21 +186,15 @@ c/w
             int[] rightHalf = Arrays.copyOfRange(A, i + 1, A.length);
             int leftSum = getSum(0, leftHalf);
             int rightSum = getSum(0, rightHalf);
+            if(leftHalf.length > 0 && rightHalf.length > 0){
+                if(leftSum == rightSum){
+                    //System.out.println("MATCH : " + leftSum + " : " + rightSum);
+                    //list.add(leftSum);
+                    points += Math.max(runNikitaGame(rightHalf), runNikitaGame(leftHalf)) + 1;
+                    break;
 
-            //System.out.println("Sum :"+ leftSum+ "  Left Half" + Arrays.toString(leftHalf));
-            //System.out.println("Sum :"+ rightSum+ "  Right Half" + Arrays.toString(rightHalf));
-
-
-            if(leftSum == rightSum){
-                //System.out.println("MATCH : " + leftSum + " : " + rightSum);
-                //list.add(leftSum);
-                points += Math.max(runNikitaGame(leftHalf), runNikitaGame(rightHalf)) + 1;
-                break;
-
+                }
             }
-
-
-
         }
 
        // System.out.println(list.size());
@@ -292,15 +286,11 @@ c/w
 
     public static int getSum(int start, int end, int[] A){
         int sum = 0;
-        for(int i = start; i < end; i++){
+        for(int i = start; i < end; i++) {
             sum += A[i];
         }
         return sum;
     }
-
-
-
-
 
 
 
