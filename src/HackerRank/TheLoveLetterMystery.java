@@ -26,7 +26,12 @@ public class TheLoveLetterMystery {
 
         ));
 
+        for(char c = 'A'; c <= 'Z'; c++){
+            int ii = c;
+            System.out.println(c + " : " + ii);
 
+
+        }
 
 
 
