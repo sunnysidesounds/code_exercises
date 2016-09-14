@@ -1,5 +1,6 @@
 package HackerRank;
 
+import java.io.StringReader;
 import java.util.*;
 
 public class DivisibleSumPairs {
@@ -7,72 +8,85 @@ public class DivisibleSumPairs {
 
     public static void main(String[] args){
 
-        int[] N = {1, 3, 2, 6, 1, 2};
-        int k = 3;
+        Scanner in = new Scanner(new StringReader(
+            "6 3\n"
+                + "1 3 2 6 1 2\n" // sorted : 1, 1, 2, 2, 3, 6
 
-        //System.out.println(diviableSumPairs1(N, k));
-        System.out.println(diviableSumPairs2(N, k));
+        ));
 
+        int n = in.nextInt();
+        int k = in.nextInt();
+        int a[] = new int[n];
+        for(int a_i=0; a_i < n; a_i++){
+            a[a_i] = in.nextInt();
+        }
 
-
-
+        System.out.println(findDiviblePairs(a, k));
 
 
     }
 
-    public static int diviableSumPairs2(int[] arr, int k){
-        int start = 0;
-        int end = arr.length - 1;
-        int sum = 0;
 
-        // output array to record matching pairs
-        StringBuilder arrs = new StringBuilder();
-
-        while (start < end) {
-            sum = arr[start] + arr[end];
-
-            System.out.println(sum + " start : " + arr[start] + " end : " + arr[end] );
-
-            if (sum == k) {
-                // we have found one pair, add it to our output array
-                arrs.append(arr[start] + "," + arr[end] + ";");
-                start++;
-                end--;
-            } else if (sum < k) {
-                // if the sum of the pair is less than the sum we are searching
-                // then increment the start pointer which would give us the sum
-                // more than our current sum as the array is sorted
-                start++;
+    public static int bsearch(int[] a, int low, int high, int x){
+        if(high >= low){
+            int middle = low + (high - low) / 2;
+            if(x == a[middle]){
+                return middle;
+            } else if(x > a[middle]){
+                return bsearch(a, (middle + 1), high, x);
             } else {
-                // if the sum of the pair is greater than the sum we are searching
-                // then decrement the end pointer which would give us the sum
-                // less than our current sum as the array is sorted
-                end--;
+                return bsearch(a, low, (middle - 1), x);
             }
         }
-        System.out.println(arrs.toString());
-        return 0;
+        return -1;
 
     }
 
 
-    public static int diviableSumPairs1(int[] N, int k){
-        int count = 0;
-        for(int i = 0; i < N.length; i++){
-            int first = N[i];
-            for(int j = (i+1); j < N.length; j++){
-                int second = N[j];
-                if((first + second) % k == 0){
+    public static int[] removeDuplicates(int[] arr) {
+        int end = arr.length;
+        Set<Integer> set = new HashSet<Integer>();
+        for(int i = 0; i < end; i++){
+            set.add(arr[i]);
+        }
+        int[] a = new int[set.size()];
+        Iterator it = set.iterator();
+        int i =0;
+        while(it.hasNext()) {
+            a[i] = Integer.valueOf(it.next().toString());
+            i++;
+        }
+        return a;
+    }
 
+
+
+
+    public static int findDiviblePairs(int[] a, int k){
+        Arrays.sort(a);
+        a = removeDuplicates(a);
+        int n = a.length;
+        int count = 0;
+
+        System.out.println(Arrays.toString(a));
+
+        for(int i = 0; i < n; i++){
+            int left = a[i];
+            System.out.println("left : " + left);
+            for(int j = n-1; j > 0; j--){
+                int right = a[j];
+                System.out.println("  left : " + left + " right : " + right + " sum : " + (left + right) + " mod : " + (left+right) % k);
+                if((left+right) % k == 0){
                     count++;
                 }
-                System.out.println(first + " : " + second + " (" + i + " " + j + ")");
-
 
             }
 
 
         }
+
+
+
         return count;
     }
 
