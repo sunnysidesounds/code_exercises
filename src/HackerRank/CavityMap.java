@@ -8,12 +8,12 @@ public class CavityMap {
 
 	public static void main(String[] args) {
 
-		/*Scanner in = new Scanner(new StringReader(
+		Scanner in = new Scanner(new StringReader(
 				"4\n"
 						+ "1112\n"
 						+ "1912\n"
 						+ "1892\n"
-						+ "1234\n"));*/
+						+ "1234\n"));
 
 	/*	Scanner in = new Scanner(new StringReader("100\n" +
 				"9898898989999898989988998889889889989999899888988889988999989888888888898998898898899889989988988888\n" +
@@ -120,7 +120,7 @@ public class CavityMap {
 
 
 
-		Scanner in = new Scanner(new StringReader("98\n" +
+		/*Scanner in = new Scanner(new StringReader("98\n" +
 				"91698326456344939552977125458415221857173245485551462491918489359572316496478351339624192565128989\n" +
 				"44681396559273312887394374281328526717592228887368345925947742465941436533517947994761311742748986\n" +
 				"13173963499747361762882716721241826575741519933277173432264485833117263896154395626668785653517729\n" +
@@ -218,7 +218,7 @@ public class CavityMap {
 				"65139867739363684939777974839332547846231884959477266241442572834662188264285521244318561453232676\n" +
 				"53783839897142652212912218672337478523262725244455994453418725449279956683322311333598553397541115\n" +
 				"57472235932515492631489458842378968855465462351883419916857349481266137929223743193297952884422614\n" +
-				"33799658141777442842393468871619465495653165966793287688349168251574377827142843354622435878732837"));
+				"33799658141777442842393468871619465495653165966793287688349168251574377827142843354622435878732837"));*/
 
 
 
@@ -247,7 +247,7 @@ public class CavityMap {
 				for(int j = 0; j < n; j++){
 					int character = Integer.valueOf(strGrid[grid_i].substring(j, j+1));
 
-					if(highestValue == character && j != 0 && j != (n-1)){
+					if(j != 0 && j != (n-1)){
 						int top = grid[grid_i-1][j];
 						int bottom = grid[grid_i+1][j];
 						int left = grid[grid_i][j-1];
@@ -255,7 +255,7 @@ public class CavityMap {
 
 
 
-						if(top < highestValue && bottom < highestValue && left < highestValue && right < highestValue){
+						if(top < character && bottom < character && left < character && right < character){
 							System.out.println("character : " + character + " index : " + j + " row : " + grid_i+ " top : " + top + " bottom : " + bottom + " left : " + left + " right : " + right);
 
 
