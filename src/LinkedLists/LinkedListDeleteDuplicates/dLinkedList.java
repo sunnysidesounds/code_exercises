@@ -15,14 +15,18 @@ public class dLinkedList {
     public static void main(String[] args){
         dLinkedList ll = new dLinkedList();
 
-        ll.insert(1);
         ll.insert(2);
-        ll.insert(3);
         ll.insert(4);
         ll.insert(5);
+        ll.insert(6);
+        ll.insert(8);
+        ll.insert(10);
+        ll.insert(13);
+        ll.insert(23);
+        ll.insert(24);
+        ll.insert(1);
 
-
-        ll.deletePosition(ll.head, 3);
+        ll.deleteEvenNumberNodes(ll.head).toString();
 
 
         System.out.println("List: " + ll.toString());
@@ -34,7 +38,32 @@ public class dLinkedList {
     }
 
     public dLinkedList(){
-        head = new Node(null);
+        head = new Node(0);
+    }
+
+
+    public Node deleteEvenNumberNodes(Node list){
+        if(list == null){
+            return list;
+        }
+
+        Node previous = null;
+        Node current = list;
+        while(current.next != null){
+            previous = current;
+            current = current.next;
+            if(current.value % 2 == 0){
+                previous.next = current.next;
+                current = previous;
+            }
+
+
+        }
+
+        list = current;
+
+        return list;
+
     }
 
     public Node deleteDuplicates(Node head) {
@@ -139,11 +168,12 @@ public class dLinkedList {
         counter--;
     }
 
+
     public String toString(){
         Node current = head.next;
         String o = "";
         while(current != null){
-            o += "[" + current.value.toString() + "]";
+            o += "[" + current.value + "]";
             current = current.next;
         }
         return o;
@@ -156,10 +186,10 @@ public class dLinkedList {
 
 
 class Node{
-    public Object value;
+    public int value;
     public Node next;
 
-    public Node(Object value){
+    public Node(int value){
         this.value = value;
     }
 
