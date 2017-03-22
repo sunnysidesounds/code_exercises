@@ -26,6 +26,10 @@ public class dLinkedList {
         ll.insert(24);
         ll.insert(1);
 
+
+
+
+        
         ll.deleteEvenNumberNodes(ll.head).toString();
 
 
