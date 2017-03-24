@@ -29,7 +29,7 @@ public class dLinkedList {
 
 
 
-        
+
         ll.deleteEvenNumberNodes(ll.head).toString();
 
 
