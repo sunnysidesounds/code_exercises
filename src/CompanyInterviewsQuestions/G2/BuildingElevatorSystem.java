@@ -21,7 +21,10 @@ public class BuildingElevatorSystem {
 
 
 		for(Floor f : newBuilding.floors){
-			System.out.println(f.floorAccessLevel.group);
+
+
+
+			System.out.println(f.levelLocation + " : " + f.floorAccessLevel.group);
 
 
 		}
@@ -101,8 +104,8 @@ class WindowFloor extends Floor {
 
 class BasementFloor extends Floor {
 	public BasementFloor(){
-		// assuming level 0 is basement
-		super(0, FloorType.BASEDMENT, new AccessLevelNode(AccessGroup.ALL_ACCESS));
+		// assuming level 1 is basement
+		super(1, FloorType.BASEDMENT, new AccessLevelNode(AccessGroup.ALL_ACCESS));
 	}
 }
 
@@ -112,6 +115,7 @@ class Floor {
 	public int levelLocation;
 	public FloorType type;
 	public AccessLevelNode floorAccessLevel;
+	public boolean isElevatorOnFloor = false;
 
 	public Floor(int level, FloorType type, AccessLevelNode access){
 		this.levelLocation = level;
@@ -123,14 +127,21 @@ class Floor {
 		this.floorAccessLevel.group = access;
 	}
 
+
 }
 
 
 // Elevators
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-class ElevatorSystem {
+class ElevatorManager {
+	public List<Elevator> elevators;
 
+
+	public ElevatorManager(List<Elevator> elevators){
+		this.elevators = elevators;
+	}
+	
 
 }
 
@@ -138,12 +149,16 @@ class ElevatorSystem {
 class PublicElevator extends Elevator {
 	public PublicElevator(){
 		super(ElevatorType.PUBLIC, ElevatorStatus.ON);
+		this.weightLimit = 1000;
+		this.currentFloor = 2; // Setting it to first non-basement floor;
 	}
 }
 
 class FreightElevator extends Elevator {
 	public FreightElevator(){
 		super(ElevatorType.FRIEGHT, ElevatorStatus.ON);
+		this.weightLimit = 3000;
+		this.currentFloor = 1; // Setting to basement floor
 	}
 }
 
@@ -152,6 +167,7 @@ class FreightElevator extends Elevator {
 class Elevator {
 
 	public int currentFloor;
+	public int currentPassengerWeight;
 	public ElevatorType type;
 	public ElevatorDirection direction;
 	public ElevatorStatus status;
@@ -164,6 +180,7 @@ class Elevator {
 
 	public Elevator(ElevatorType type, ElevatorStatus status){
 		this.currentFloor = 0;
+		this.currentPassengerWeight = 0;
 		this.type = type;
 		this.status = status;
 		this.direction = ElevatorDirection.STAND;
@@ -189,8 +206,16 @@ class AccessLevelNode{
 
 
 class Passenger {
-	int floorRequest;
-	AccessLevelNode accessLevel;
+	public int floorRequest;
+	public int currentFloor;
+	public AccessLevelNode accessLevel;
+
+	public Passenger(int floorRequest, int currentFloor, AccessLevelNode access){
+		this.floorRequest = floorRequest;
+		this.currentFloor = currentFloor;
+		this.accessLevel = access;
+	}
+
 
 }
 
