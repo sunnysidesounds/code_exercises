@@ -5,17 +5,62 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BuildingElevatorSystem {
+
+
+	public static void main(String[] args){
+		List<Integer> limitedAccessList = new ArrayList<Integer>();
+		// Put limited access on basement
+		limitedAccessList.add(1);
+		// Put limited acces on 50th floor
+		limitedAccessList.add(50);
+
+		Building newBuilding = BuildingFactory.constructBuilding("G2 Web Services", 50, limitedAccessList);
+
+		System.out.println(newBuilding.elevators.size());
+		System.out.println(newBuilding.floors.size());
+
+
+		for(Floor f : newBuilding.floors){
+			System.out.println(f.floorAccessLevel.group);
+
+
+		}
+
+
+	}
+
+
 }
+
+
+// Factory
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 class BuildingFactory {
 
-	public static Building constructBuilding(String name, int floorCount){
+	// This construction is based on the exercise requirements :
+
+	public static Building constructBuilding(String name, int floorCount, List<Integer> limitAccessList){
 		// Build out our basement and window floors
 		List<Floor> floors = new ArrayList<Floor>();
-		floors.add(new BasementFloor()); // assuming basement is on floor zero.
+
+		// 1 is assumed basement level
 		for(int i = 1; i <= floorCount; i++){
-			floors.add(new WindowFloor(i));
+			if(i == 1){
+				Floor basement = new BasementFloor();
+				if(limitAccessList.contains(i)){
+					basement.setFloorAccess(AccessGroup.LIMITED_ACCESS);
+				}
+				floors.add(basement);
+			} else {
+				Floor floor = new WindowFloor(i);
+				if(limitAccessList.contains(i)){
+					floor.setFloorAccess(AccessGroup.LIMITED_ACCESS);
+				}
+				floors.add(floor);
+			}
 		}
 
 		List<Elevator> elevators = new ArrayList<Elevator>();
@@ -24,8 +69,6 @@ class BuildingFactory {
 		return new Building(name, floors, elevators);
 
 	}
-
-
 }
 
 
@@ -46,6 +89,7 @@ class Building {
 
 
 // Floors
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 class WindowFloor extends Floor {
@@ -58,7 +102,7 @@ class WindowFloor extends Floor {
 class BasementFloor extends Floor {
 	public BasementFloor(){
 		// assuming level 0 is basement
-		super(0, FloorType.BASEDMENT, new AccessLevelNode(AccessGroup.LIMITED_ACCESS));
+		super(0, FloorType.BASEDMENT, new AccessLevelNode(AccessGroup.ALL_ACCESS));
 	}
 }
 
@@ -83,10 +127,11 @@ class Floor {
 
 
 // Elevators
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class ElevatorSystem {
 
-	
+
 }
 
 
@@ -151,6 +196,8 @@ class Passenger {
 
 
 // Enums :
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 enum AccessGroup {
 	ALL_ACCESS, LIMITED_ACCESS
 }
