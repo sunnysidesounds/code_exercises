@@ -2,6 +2,7 @@ package CompanyInterviewsQuestions.G2;
 
 import javax.lang.model.element.ElementVisitor;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class BuildingElevatorSystem {
@@ -16,15 +17,14 @@ public class BuildingElevatorSystem {
 
 		Building newBuilding = BuildingFactory.constructBuilding("G2 Web Services", 50, limitedAccessList);
 
-		System.out.println(newBuilding.elevators.size());
-		System.out.println(newBuilding.floors.size());
-
-
 		for(Floor f : newBuilding.floors){
 
+			if(f.elevatorOnFloor != null){
+				System.out.println(f.levelLocation + " : " + f.floorAccessLevel.group + " : " + f.elevatorOnFloor.type);
+			} else {
+				System.out.println(f.levelLocation + " : " + f.floorAccessLevel.group);
+			}
 
-
-			System.out.println(f.levelLocation + " : " + f.floorAccessLevel.group);
 
 
 		}
@@ -46,8 +46,11 @@ class BuildingFactory {
 	// This construction is based on the exercise requirements :
 
 	public static Building constructBuilding(String name, int floorCount, List<Integer> limitAccessList){
-		// Build out our basement and window floors
 		List<Floor> floors = new ArrayList<Floor>();
+		List<Elevator> elevators = new ArrayList<Elevator>();
+
+		Elevator publicElevator = new PublicElevator();
+		Elevator freightElevator = new FreightElevator();
 
 		// 1 is assumed basement level
 		for(int i = 1; i <= floorCount; i++){
@@ -56,19 +59,32 @@ class BuildingFactory {
 				if(limitAccessList.contains(i)){
 					basement.setFloorAccess(AccessGroup.LIMITED_ACCESS);
 				}
+
+				if(i == publicElevator.currentFloor){
+					basement.elevatorOnFloor = publicElevator;
+				} else if(i == freightElevator.currentFloor){
+					basement.elevatorOnFloor = freightElevator;
+				}
+
 				floors.add(basement);
 			} else {
 				Floor floor = new WindowFloor(i);
 				if(limitAccessList.contains(i)){
 					floor.setFloorAccess(AccessGroup.LIMITED_ACCESS);
 				}
+
+				if(i == publicElevator.currentFloor){
+					floor.elevatorOnFloor = publicElevator;
+				} else if(i == freightElevator.currentFloor){
+					floor.elevatorOnFloor = freightElevator;
+				}
 				floors.add(floor);
 			}
 		}
 
-		List<Elevator> elevators = new ArrayList<Elevator>();
-		elevators.add(new PublicElevator());
-		elevators.add(new FreightElevator());
+		elevators.add(publicElevator);
+		elevators.add(freightElevator);
+
 		return new Building(name, floors, elevators);
 
 	}
@@ -115,19 +131,20 @@ class Floor {
 	public int levelLocation;
 	public FloorType type;
 	public AccessLevelNode floorAccessLevel;
-	public boolean isElevatorOnFloor = false;
+	public Elevator elevatorOnFloor;
+
+	// Do I need a passenger list
 
 	public Floor(int level, FloorType type, AccessLevelNode access){
 		this.levelLocation = level;
 		this.type = type;
 		this.floorAccessLevel = access;
+		this.elevatorOnFloor = null;
 	}
 
 	public void setFloorAccess(AccessGroup access){
 		this.floorAccessLevel.group = access;
 	}
-
-
 }
 
 
@@ -135,13 +152,13 @@ class Floor {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class ElevatorManager {
-	public List<Elevator> elevators;
+	public Building building;
 
 
-	public ElevatorManager(List<Elevator> elevators){
-		this.elevators = elevators;
+	public ElevatorManager(Building building){
+		this.building = building;
 	}
-	
+
 
 }
 
@@ -156,7 +173,7 @@ class PublicElevator extends Elevator {
 
 class FreightElevator extends Elevator {
 	public FreightElevator(){
-		super(ElevatorType.FRIEGHT, ElevatorStatus.ON);
+		super(ElevatorType.FREIGHT, ElevatorStatus.ON);
 		this.weightLimit = 3000;
 		this.currentFloor = 1; // Setting to basement floor
 	}
@@ -228,7 +245,7 @@ enum AccessGroup {
 }
 
 enum ElevatorType {
-	PUBLIC, FRIEGHT
+	PUBLIC, FREIGHT
 }
 
 enum FloorType {
