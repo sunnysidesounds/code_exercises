@@ -1,6 +1,5 @@
 package CompanyInterviewsQuestions.G2;
 
-import javax.lang.model.element.ElementVisitor;
 import java.util.*;
 
 public class BuildingElevatorSystem {
@@ -16,13 +15,13 @@ public class BuildingElevatorSystem {
 		Building building = BuildingFactory.constructBuilding("G2 Web Services", 50, limitedAccessList);
 		ElevatorManager elevatorManager = new ElevatorManager(building);
 
-		Passenger passenger1 = new Passenger(5, 2, new AccessLevelNode(AccessGroup.LIMITED_ACCESS), 50, ElevatorType.PUBLIC);
+		Passenger passenger1 = new Passenger(50, 2, new AccessLevelNode(AccessGroup.LIMITED_ACCESS), 50, ElevatorType.PUBLIC);
+		Passenger passenger2 = new Passenger(5, 2, new AccessLevelNode(AccessGroup.LIMITED_ACCESS), 50, ElevatorType.PUBLIC);
 
 		elevatorManager.makeFloorRequest(passenger1);
+		elevatorManager.makeFloorRequest(passenger2);
 
 	}
-
-
 }
 
 
@@ -71,7 +70,6 @@ class BuildingFactory {
 				floors.add(floor);
 			}
 		}
-
 		elevators.add(publicElevator);
 		elevators.add(freightElevator);
 
@@ -82,79 +80,96 @@ class BuildingFactory {
 
 class ElevatorManager {
 	public Building building;
-	public Map<ElevatorType, Integer> elevatorMap;
-
+	public Map<ElevatorType, Elevator> elevatorTypeMap;
 
 	public ElevatorManager(Building building){
 		this.building = building;
-		this.elevatorMap = new HashMap<ElevatorType, Integer>();
+		this.elevatorTypeMap = new HashMap<ElevatorType, Elevator>();
 		this.initalizeManager();
 	}
 
 	public void initalizeManager(){
 		for(Floor f : this.building.floors){
 			if(f.elevatorOnFloor != null){
-				this.elevatorMap.put(f.elevatorOnFloor.type, f.levelLocation);
-
-				System.out.println(f.levelLocation + " : " + f.floorAccessLevel.group + " : " + f.elevatorOnFloor.type);
-			} else {
-				System.out.println(f.levelLocation + " : " + f.floorAccessLevel.group);
+				this.elevatorTypeMap.put(f.elevatorOnFloor.type, f.elevatorOnFloor);
 			}
 		}
-
+		this.processElevatorRequest();
 	}
 
 	public void makeFloorRequest(Passenger passenger){
-
-		ElevatorType elevatorType = passenger.elevatorType;
-		if(elevatorMap.containsKey(elevatorType)){ // Should always be the case
-			int elevatorCurrentFloor = elevatorMap.get(elevatorType);
-			int passangerFloorRequest = passenger.floorRequest;
-
-			// floor request is 5
-			// current floor is 2
-			// elevator is on 7
-
-			// user requests floor and gets on the elevator
-			// put in elevator's queue
-			// elevator take first request in queue and moves to that floor.
-			// If passanger is at current row, remove elevator array, add to floor array.
-
-
-
-
-		/*	if(floorRequest == elevatorCurrentFloor){
-				Floor currentFloor = this.building.floors.get(elevatorCurrentFloor);
-				currentFloor.addPassengerToFloor(passenger);
-			} else if (floorRequest < elevatorCurrentFloor){
-				// Than elevator is above me...
-
-
-			}*/
-
-
+		// Make the request to the approprate elevator.
+		if(this.elevatorTypeMap.containsKey(passenger.elevatorType)){
+			System.out.println("Passenger requests to go to : " + passenger.floorRequest);
+			Elevator selectedElevator = this.elevatorTypeMap.get(passenger.elevatorType);
+			selectedElevator.passengers.add(passenger);
+			this.processElevatorRequest();
 		} else {
-			System.out.println("Elevator type is unknown");
+			System.out.println("Could not find elevator!");
 		}
-
-
-
-
-
-		// Get passengers current floor and elevator type
-		//if(this.elevatorList.contains(passenger.currentFloor)){
-
-
-		//}
-
-
-		// Get elevators current floor
 	}
 
+	public void processElevatorRequest(){
+		for(Elevator elevator : this.building.elevators){
+			while(!elevator.passengers.isEmpty()){
+				Passenger passenger = elevator.passengers.peek();
+				int floorRequest = passenger.floorRequest;
+				if(elevator.currentFloor < floorRequest){
+					moveElevatorUp(elevator, floorRequest);
+				} else if (elevator.currentFloor > floorRequest){
+					moveElevatorDown(elevator, floorRequest);
+				}
+			}
+		}
+	}
 
+	public void moveElevatorDown(Elevator elevator, int floorRequest){
+		if(floorRequest <= this.building.floors.size()) {
+			for (int i = elevator.currentFloor; i >= floorRequest; i--) {
+				System.out.println("Moving down " + i);
+				elevator.direction = ElevatorDirection.DOWN;
+				moveElevator(elevator, floorRequest, i);
+			}
+		} else {
+			System.out.println("You've request a floor out of bounds");
+		}
+	}
 
+	public void moveElevatorUp(Elevator elevator, int floorRequest){
+		if(floorRequest <= this.building.floors.size()) {
+			for(int i = elevator.currentFloor; i<=floorRequest; i++){
+				System.out.println("Moving up " + i);
+				elevator.direction = ElevatorDirection.UP;
+				moveElevator(elevator, floorRequest, i);
+			}
+		} else {
+			System.out.println("You've request a floor out of bounds");
+		}
+	}
 
-
+	private void moveElevator(Elevator elevator, int floorRequest, int currentFloor){
+		if(currentFloor == floorRequest){
+			Passenger passenger = elevator.passengers.remove();
+			Floor floor = this.building.floors.get(floorRequest-1);
+			// Check Floor Access only on LIMIT_ACCESS floors
+			if(floor.floorAccessLevel.group == AccessGroup.LIMITED_ACCESS){
+				if(passenger.accessLevel.group == floor.floorAccessLevel.group) {
+					System.out.println("Access granted adding passenger to floor " + floor.levelLocation);
+					elevator.direction = ElevatorDirection.STAND;
+					elevator.currentFloor = currentFloor;
+					floor.addPassengerToFloor(passenger);
+				} else {
+					System.out.println("Passenger does not have access! " + passenger.accessLevel.group);
+					// Need new request from passenger
+				}
+			} else {
+				System.out.println("Adding passanger to floor " + floor.levelLocation);
+				elevator.direction = ElevatorDirection.STAND;
+				elevator.currentFloor = currentFloor;
+				floor.addPassengerToFloor(passenger);
+			}
+		}
+	}
 }
 
 
@@ -171,7 +186,6 @@ class Building {
 		this.floors = floors;
 		this.elevators = elevators;
 	}
-
 }
 
 
@@ -211,13 +225,7 @@ class Floor {
 	}
 
 	public void addPassengerToFloor(Passenger passenger){
-		if(this.floorAccessLevel.group == passenger.accessLevel.group){
-			this.passengers.add(passenger);
-		} else {
-			System.out.println("Error you don't have access to this floor");
-		}
-
-
+		this.passengers.add(passenger);
 	}
 
 	public void setFloorAccess(AccessGroup access){
@@ -254,12 +262,8 @@ class Elevator {
 	public ElevatorType type;
 	public ElevatorDirection direction;
 	public ElevatorStatus status;
-	//public List<Integer> floorRequests;
-	public List<Passenger> passengers;
+	public Queue<Passenger> passengers;
 	public int weightLimit;
-	//public int passengerCount;
-
-	public Elevator(){}
 
 	public Elevator(ElevatorType type, ElevatorStatus status){
 		this.currentFloor = 0;
@@ -267,13 +271,11 @@ class Elevator {
 		this.type = type;
 		this.status = status;
 		this.direction = ElevatorDirection.STAND;
-		//this.floorRequests = new ArrayList<Integer>();
-		this.passengers = new ArrayList<Passenger>();
+		this.passengers = new LinkedList<Passenger>();
 		this.weightLimit = 0;
-		//this.passengerCount = 0;
 	}
-}
 
+}
 
 class AccessLevelNode{
 	public AccessGroup group;
@@ -282,11 +284,9 @@ class AccessLevelNode{
 	public AccessLevelNode(AccessGroup group){
 		this.group = group;
 		this.AccessId = 0; // Auto generate id;
-
 	}
 
 }
-
 
 class Passenger {
 	public int floorRequest;
@@ -302,8 +302,6 @@ class Passenger {
 		this.weight = weight;
 		this.elevatorType = type;
 	}
-
-
 }
 
 
