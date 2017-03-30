@@ -15,7 +15,7 @@ public class BuildingElevatorSystem {
 		Building building = BuildingFactory.constructBuilding("G2 Web Services", 50, limitedAccessList);
 		ElevatorManager elevatorManager = new ElevatorManager(building);
 
-		Passenger passenger1 = new Passenger(50, 2, new AccessLevelNode(AccessGroup.LIMITED_ACCESS), 50, ElevatorType.PUBLIC);
+		Passenger passenger1 = new Passenger(50, 3, new AccessLevelNode(AccessGroup.LIMITED_ACCESS), 50, ElevatorType.PUBLIC);
 		Passenger passenger2 = new Passenger(5, 2, new AccessLevelNode(AccessGroup.LIMITED_ACCESS), 50, ElevatorType.PUBLIC);
 
 		elevatorManager.makeFloorRequest(passenger1);
@@ -100,7 +100,8 @@ class ElevatorManager {
 	public void makeFloorRequest(Passenger passenger){
 		// Make the request to the approprate elevator.
 		if(this.elevatorTypeMap.containsKey(passenger.elevatorType)){
-			System.out.println("Passenger requests to go to : " + passenger.floorRequest);
+			System.out.println("Elevator Request ("+passenger.elevatorType+") : " +
+					"Going to " + passenger.floorRequest + " they are on " + passenger.currentFloor);
 			Elevator selectedElevator = this.elevatorTypeMap.get(passenger.elevatorType);
 			selectedElevator.passengers.add(passenger);
 			this.processElevatorRequest();
@@ -113,11 +114,11 @@ class ElevatorManager {
 		for(Elevator elevator : this.building.elevators){
 			while(!elevator.passengers.isEmpty()){
 				Passenger passenger = elevator.passengers.peek();
-				int floorRequest = passenger.floorRequest;
-				if(elevator.currentFloor < floorRequest){
-					moveElevatorUp(elevator, floorRequest);
-				} else if (elevator.currentFloor > floorRequest){
-					moveElevatorDown(elevator, floorRequest);
+				// Move elevator to current passenger floor
+				if(elevator.currentFloor < passenger.currentFloor){
+					moveElevatorUp(elevator, passenger.currentFloor);
+				} else if (elevator.currentFloor > passenger.currentFloor){
+					moveElevatorDown(elevator, passenger.currentFloor);
 				}
 			}
 		}
@@ -149,24 +150,38 @@ class ElevatorManager {
 
 	private void moveElevator(Elevator elevator, int floorRequest, int currentFloor){
 		if(currentFloor == floorRequest){
-			Passenger passenger = elevator.passengers.remove();
-			Floor floor = this.building.floors.get(floorRequest-1);
-			// Check Floor Access only on LIMIT_ACCESS floors
-			if(floor.floorAccessLevel.group == AccessGroup.LIMITED_ACCESS){
-				if(passenger.accessLevel.group == floor.floorAccessLevel.group) {
-					System.out.println("Access granted adding passenger to floor " + floor.levelLocation);
+			Passenger passenger = elevator.passengers.peek();
+			if(currentFloor == passenger.floorRequest) {
+				passenger = elevator.passengers.remove();
+				Floor floor = this.building.floors.get(floorRequest-1);
+				// Check Floor Access only on LIMIT_ACCESS floors and is the Public Elevator, Freight can do anywhere
+				if(floor.floorAccessLevel.group == AccessGroup.LIMITED_ACCESS && elevator.type == ElevatorType.PUBLIC){
+					if(passenger.accessLevel.group == floor.floorAccessLevel.group) {
+						System.out.println("Adding passanger to floor (Access granted) " + floor.levelLocation);
+						elevator.direction = ElevatorDirection.STAND;
+						elevator.currentFloor = currentFloor;
+						floor.addPassengerToFloor(passenger);
+					} else {
+						System.out.println("Passenger does not have access! " + passenger.accessLevel.group);
+						// Need new request from passenger
+					}
+				} else {
+					System.out.println("Adding passenger to floor " + floor.levelLocation);
 					elevator.direction = ElevatorDirection.STAND;
 					elevator.currentFloor = currentFloor;
 					floor.addPassengerToFloor(passenger);
-				} else {
-					System.out.println("Passenger does not have access! " + passenger.accessLevel.group);
-					// Need new request from passenger
 				}
 			} else {
-				System.out.println("Adding passanger to floor " + floor.levelLocation);
-				elevator.direction = ElevatorDirection.STAND;
+				System.out.println("Picking up passenger on " + currentFloor + " taking them to " + passenger.floorRequest);
 				elevator.currentFloor = currentFloor;
-				floor.addPassengerToFloor(passenger);
+				// Move elevator to current request floor
+				if(currentFloor < passenger.floorRequest){
+					moveElevatorUp(elevator, passenger.floorRequest);
+				} else if (currentFloor > passenger.floorRequest){
+					moveElevatorDown(elevator, passenger.floorRequest);
+				} else {
+					System.out.println("equal?");
+				}
 			}
 		}
 	}
