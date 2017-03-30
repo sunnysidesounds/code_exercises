@@ -1,9 +1,7 @@
 package CompanyInterviewsQuestions.G2;
 
 import javax.lang.model.element.ElementVisitor;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class BuildingElevatorSystem {
 
@@ -15,20 +13,12 @@ public class BuildingElevatorSystem {
 		// Put limited acces on 50th floor
 		limitedAccessList.add(50);
 
-		Building newBuilding = BuildingFactory.constructBuilding("G2 Web Services", 50, limitedAccessList);
+		Building building = BuildingFactory.constructBuilding("G2 Web Services", 50, limitedAccessList);
+		ElevatorManager elevatorManager = new ElevatorManager(building);
 
-		for(Floor f : newBuilding.floors){
+		Passenger passenger1 = new Passenger(5, 2, new AccessLevelNode(AccessGroup.LIMITED_ACCESS), 50, ElevatorType.PUBLIC);
 
-			if(f.elevatorOnFloor != null){
-				System.out.println(f.levelLocation + " : " + f.floorAccessLevel.group + " : " + f.elevatorOnFloor.type);
-			} else {
-				System.out.println(f.levelLocation + " : " + f.floorAccessLevel.group);
-			}
-
-
-
-		}
-
+		elevatorManager.makeFloorRequest(passenger1);
 
 	}
 
@@ -52,14 +42,14 @@ class BuildingFactory {
 		Elevator publicElevator = new PublicElevator();
 		Elevator freightElevator = new FreightElevator();
 
-		// 1 is assumed basement level
 		for(int i = 1; i <= floorCount; i++){
+			// 1 is assumed basement level
 			if(i == 1){
 				Floor basement = new BasementFloor();
 				if(limitAccessList.contains(i)){
 					basement.setFloorAccess(AccessGroup.LIMITED_ACCESS);
 				}
-
+				// Setting inital elevator floor
 				if(i == publicElevator.currentFloor){
 					basement.elevatorOnFloor = publicElevator;
 				} else if(i == freightElevator.currentFloor){
@@ -72,7 +62,7 @@ class BuildingFactory {
 				if(limitAccessList.contains(i)){
 					floor.setFloorAccess(AccessGroup.LIMITED_ACCESS);
 				}
-
+				// Setting inital elevator floor
 				if(i == publicElevator.currentFloor){
 					floor.elevatorOnFloor = publicElevator;
 				} else if(i == freightElevator.currentFloor){
@@ -89,6 +79,84 @@ class BuildingFactory {
 
 	}
 }
+
+class ElevatorManager {
+	public Building building;
+	public Map<ElevatorType, Integer> elevatorMap;
+
+
+	public ElevatorManager(Building building){
+		this.building = building;
+		this.elevatorMap = new HashMap<ElevatorType, Integer>();
+		this.initalizeManager();
+	}
+
+	public void initalizeManager(){
+		for(Floor f : this.building.floors){
+			if(f.elevatorOnFloor != null){
+				this.elevatorMap.put(f.elevatorOnFloor.type, f.levelLocation);
+
+				System.out.println(f.levelLocation + " : " + f.floorAccessLevel.group + " : " + f.elevatorOnFloor.type);
+			} else {
+				System.out.println(f.levelLocation + " : " + f.floorAccessLevel.group);
+			}
+		}
+
+	}
+
+	public void makeFloorRequest(Passenger passenger){
+
+		ElevatorType elevatorType = passenger.elevatorType;
+		if(elevatorMap.containsKey(elevatorType)){ // Should always be the case
+			int elevatorCurrentFloor = elevatorMap.get(elevatorType);
+			int passangerFloorRequest = passenger.floorRequest;
+
+			// floor request is 5
+			// current floor is 2
+			// elevator is on 7
+
+			// user requests floor and gets on the elevator
+			// put in elevator's queue
+			// elevator take first request in queue and moves to that floor.
+			// If passanger is at current row, remove elevator array, add to floor array.
+
+
+
+
+		/*	if(floorRequest == elevatorCurrentFloor){
+				Floor currentFloor = this.building.floors.get(elevatorCurrentFloor);
+				currentFloor.addPassengerToFloor(passenger);
+			} else if (floorRequest < elevatorCurrentFloor){
+				// Than elevator is above me...
+
+
+			}*/
+
+
+		} else {
+			System.out.println("Elevator type is unknown");
+		}
+
+
+
+
+
+		// Get passengers current floor and elevator type
+		//if(this.elevatorList.contains(passenger.currentFloor)){
+
+
+		//}
+
+
+		// Get elevators current floor
+	}
+
+
+
+
+
+}
+
 
 
 
@@ -132,14 +200,24 @@ class Floor {
 	public FloorType type;
 	public AccessLevelNode floorAccessLevel;
 	public Elevator elevatorOnFloor;
-
-	// Do I need a passenger list
+	public List<Passenger> passengers;
 
 	public Floor(int level, FloorType type, AccessLevelNode access){
 		this.levelLocation = level;
 		this.type = type;
 		this.floorAccessLevel = access;
 		this.elevatorOnFloor = null;
+		this.passengers = new ArrayList<Passenger>();
+	}
+
+	public void addPassengerToFloor(Passenger passenger){
+		if(this.floorAccessLevel.group == passenger.accessLevel.group){
+			this.passengers.add(passenger);
+		} else {
+			System.out.println("Error you don't have access to this floor");
+		}
+
+
 	}
 
 	public void setFloorAccess(AccessGroup access){
@@ -150,18 +228,6 @@ class Floor {
 
 // Elevators
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-class ElevatorManager {
-	public Building building;
-
-
-	public ElevatorManager(Building building){
-		this.building = building;
-	}
-
-
-}
-
 
 class PublicElevator extends Elevator {
 	public PublicElevator(){
@@ -188,10 +254,10 @@ class Elevator {
 	public ElevatorType type;
 	public ElevatorDirection direction;
 	public ElevatorStatus status;
-	public List<Integer> floorRequests;
+	//public List<Integer> floorRequests;
 	public List<Passenger> passengers;
 	public int weightLimit;
-	public int passengerCount;
+	//public int passengerCount;
 
 	public Elevator(){}
 
@@ -201,10 +267,10 @@ class Elevator {
 		this.type = type;
 		this.status = status;
 		this.direction = ElevatorDirection.STAND;
-		this.floorRequests = new ArrayList<Integer>();
+		//this.floorRequests = new ArrayList<Integer>();
 		this.passengers = new ArrayList<Passenger>();
 		this.weightLimit = 0;
-		this.passengerCount = 0;
+		//this.passengerCount = 0;
 	}
 }
 
@@ -224,13 +290,17 @@ class AccessLevelNode{
 
 class Passenger {
 	public int floorRequest;
+	public ElevatorType elevatorType;
 	public int currentFloor;
+	public int weight;
 	public AccessLevelNode accessLevel;
 
-	public Passenger(int floorRequest, int currentFloor, AccessLevelNode access){
+	public Passenger(int floorRequest, int currentFloor, AccessLevelNode access, int weight, ElevatorType type){
 		this.floorRequest = floorRequest;
 		this.currentFloor = currentFloor;
 		this.accessLevel = access;
+		this.weight = weight;
+		this.elevatorType = type;
 	}
 
 
