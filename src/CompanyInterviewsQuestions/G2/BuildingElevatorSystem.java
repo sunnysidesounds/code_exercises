@@ -78,6 +78,9 @@ class BuildingFactory {
 	}
 }
 
+// Elevator Manager
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 class ElevatorManager {
 	public Building building;
 	public Map<ElevatorType, Elevator> elevatorTypeMap;
@@ -88,6 +91,9 @@ class ElevatorManager {
 		this.initalizeManager();
 	}
 
+	/**
+	 * Initial the manager, setup elevator type map and process any requests.
+	 */
 	public void initalizeManager(){
 		for(Floor f : this.building.floors){
 			if(f.elevatorOnFloor != null){
@@ -97,6 +103,10 @@ class ElevatorManager {
 		this.processElevatorRequest();
 	}
 
+	/**
+	 * Passenger requests are processed here
+	 * @param passenger Passenger Object
+	 */
 	public void makeFloorRequest(Passenger passenger){
 		// Make the request to the approprate elevator.
 		if(this.elevatorTypeMap.containsKey(passenger.elevatorType)){
@@ -110,45 +120,74 @@ class ElevatorManager {
 		}
 	}
 
+	/**
+	 * Process the passenger elevator request. Determines
+	 * if weight limit is within bounds and moves elevator.
+	 */
 	public void processElevatorRequest(){
 		for(Elevator elevator : this.building.elevators){
 			while(!elevator.passengers.isEmpty()){
 				Passenger passenger = elevator.passengers.peek();
-				// Move elevator to current passenger floor
-				if(elevator.currentFloor < passenger.currentFloor){
-					moveElevatorUp(elevator, passenger.currentFloor);
-				} else if (elevator.currentFloor > passenger.currentFloor){
-					moveElevatorDown(elevator, passenger.currentFloor);
+
+				int elevatorWeightLimit = elevator.weightLimit;
+				if((passenger.weight + elevator.currentWeightLimit) > elevatorWeightLimit){
+					System.out.println("Exceeded elevator weight limit!");
+					elevator.status = ElevatorStatus.ERROR;
+					new AlarmSystem(AlarmType.WEIGHT_LIMIT_EXCEEDED);
+				} else {
+					// Move elevator to current passenger floor
+					if(elevator.currentFloor < passenger.currentFloor){
+						moveElevatorUp(elevator, passenger.currentFloor);
+					} else if (elevator.currentFloor > passenger.currentFloor){
+						moveElevatorDown(elevator, passenger.currentFloor);
+					}
 				}
 			}
 		}
 	}
 
+	/**
+	 * Moves elevator down based on current floor and the requested floor
+	 * @param elevator Elevator Object
+	 * @param floorRequest int floor request number
+	 */
 	public void moveElevatorDown(Elevator elevator, int floorRequest){
 		if(floorRequest <= this.building.floors.size()) {
 			for (int i = elevator.currentFloor; i >= floorRequest; i--) {
 				System.out.println("Moving down " + i);
 				elevator.direction = ElevatorDirection.DOWN;
-				moveElevator(elevator, floorRequest, i);
+				processElevator(elevator, floorRequest, i);
 			}
 		} else {
 			System.out.println("You've request a floor out of bounds");
 		}
 	}
 
+	/**
+	 * Moves elevator up based on current floor and the request floor
+	 * @param elevator Elevator Object
+	 * @param floorRequest int floor request number
+	 */
 	public void moveElevatorUp(Elevator elevator, int floorRequest){
 		if(floorRequest <= this.building.floors.size()) {
 			for(int i = elevator.currentFloor; i<=floorRequest; i++){
 				System.out.println("Moving up " + i);
 				elevator.direction = ElevatorDirection.UP;
-				moveElevator(elevator, floorRequest, i);
+				processElevator(elevator, floorRequest, i);
 			}
 		} else {
 			System.out.println("You've request a floor out of bounds");
 		}
 	}
 
-	private void moveElevator(Elevator elevator, int floorRequest, int currentFloor){
+	/**
+	 * This validates, processes the elevator requests. It also determines if it needs to move up and down based
+	 * on if the current floor matches the request.
+	 * @param elevator Elevator Object
+	 * @param floorRequest int floor request number
+	 * @param currentFloor int current floor number
+	 */
+	private void processElevator(Elevator elevator, int floorRequest, int currentFloor){
 		if(currentFloor == floorRequest){
 			Passenger passenger = elevator.passengers.peek();
 			if(currentFloor == passenger.floorRequest) {
@@ -187,7 +226,8 @@ class ElevatorManager {
 	}
 }
 
-
+// Building
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 class Building {
@@ -279,6 +319,7 @@ class Elevator {
 	public ElevatorStatus status;
 	public Queue<Passenger> passengers;
 	public int weightLimit;
+	public int currentWeightLimit;
 
 	public Elevator(ElevatorType type, ElevatorStatus status){
 		this.currentFloor = 0;
@@ -288,6 +329,7 @@ class Elevator {
 		this.direction = ElevatorDirection.STAND;
 		this.passengers = new LinkedList<Passenger>();
 		this.weightLimit = 0;
+		this.currentWeightLimit = 0;
 	}
 
 }
@@ -319,8 +361,31 @@ class Passenger {
 	}
 }
 
+// Alarm System
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-// Enums :
+class AlarmSystem {
+	public AlarmStatus status;
+	public AlarmType type;
+
+	public AlarmSystem(AlarmType type){
+			this.status = AlarmStatus.ON;
+			this.type = type;
+			this.executeAlarm();
+	}
+
+	public void executeAlarm(){
+		if(this.type == AlarmType.WEIGHT_LIMIT_EXCEEDED){
+			System.out.println("This elevator has exceeded it's weight limit!");
+		} else if (this.type == AlarmType.MECHANICAL_ERROR){
+			System.out.println("This elevator has just had a mechinical failure, help is on it's way!");
+		}
+	}
+}
+
+
+
+// Enums
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 enum AccessGroup {
@@ -340,7 +405,15 @@ enum ElevatorDirection {
 }
 
 enum ElevatorStatus {
+	ON, OFF, ERROR
+}
+
+enum AlarmStatus {
 	ON, OFF
+}
+
+enum AlarmType {
+	WEIGHT_LIMIT_EXCEEDED, MECHANICAL_ERROR
 }
 
 
